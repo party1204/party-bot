@@ -7,12 +7,12 @@ from urllib.parse import quote
 import os
 import random
 import time
+import asyncio
 
 # הגדרות
 BOT_TOKEN = "8168907258:AAGBOlvovBQSF-5bUSj3B04yfnMFlogoCIE"  # טוקן הבוט שלך
 CHAT_ID = "4710675866"  # מזהה הקבוצה שלך בטלגרם
-ADMITAD_BASE = "https://rzekl.com/g/1e8d11449475164bd74316525dc3e8/"  # הקישור שלך ב-Admitad
-AFFILIATE_ID = "my_party"  # ה-Affiliate ID שלך ב-AliExpress
+ADMITAD_BASE = "https://rzekl.com/g/1e8d11449475164bd74316525dc3e8/"  # הקישור המותאם אישית שלך ב-Admitad
 SENT_FILE = "sent_products.txt"  # קובץ המוצרים שנשלחו
 
 bot = Bot(token=BOT_TOKEN)
@@ -101,7 +101,7 @@ def get_image(url):
         return None
 
 # שליפת מוצרים טרנדיים לפי קטגוריות
-def get_trending_products(limit=3):
+async def get_trending_products(limit=3):
     sent = load_sent_products()
     categories = [
         "אביזרים לחתונות",
@@ -139,7 +139,7 @@ def get_trending_products(limit=3):
             rich_text = generate_rich_text(title, price, affiliate_link)
 
             # שליחה לטלגרם
-            bot.send_message(chat_id=CHAT_ID, text=rich_text, parse_mode="HTML")
+            await bot.send_message(chat_id=CHAT_ID, text=rich_text, parse_mode="HTML")
             save_sent_product(product_id)
 
             products.append({
@@ -160,7 +160,7 @@ def start_scheduler():
 
 if __name__ == "__main__":
     # הרצת הפונקציה לשלוח 3 מוצרים מיד עם הפעלת הקוד
-    get_trending_products()
+    asyncio.run(get_trending_products())
     
     # מנגנון הממתין עד שהמשימה המתוזמנת רצה
     start_scheduler()
